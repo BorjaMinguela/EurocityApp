@@ -12,20 +12,32 @@
     </head>
     <body>
 		<div data-role="header" data-position="fixed">
-			<fieldset data-role="collapsible" id="collapsible-1" data-collapsed-icon="bullets" data-expanded-icon="bars" data-iconpos="right">
-				<h1 style="text-align: center;">Mi Perfil</h1>
-				<p>Collapsible content.</p>
-				<p>Collapsible content2.</p>
-			</fieldset>
+			<div style="width:30%;display: inline-block;">
+				<a href="miPerfil.html">
+  					<img src="img/user-icon.png" alt="Perfil" style="width:100px;height:100px;border:0;">
+				</a>
+			</div>
+			<div style="width:30%;display: inline-block;">
+				<a href="misDestinos.html">
+  					<img src="img/home-icon.png" alt="Perfil" style="width:100px;height:100px;border:0;">
+				</a>
+			</div>
+			<div class="perfil-options" style="text-align:center;display: inline-block;">
+				<fieldset data-role="collapsible" id="collapsible-1" data-collapsed-icon="bullets" data-expanded-icon="bars" data-iconpos="right">
+					<h1>Mi Perfil</h1>
+					<p>Collapsible content.</p>
+					<p>Collapsible content2.</p>
+				</fieldset>
+			</div>
 		</div>
-		<div id="miperfil" data-role="content">
+		<div data-role="content" id="turismo">
+		
 		</div>
+		<script type="text/javascript" src="js/responsivevoice.js"></script>
 		<script type="text/javascript" src="js/functions.js"></script>
 		<script type="text/javascript" src="js/objects.js"></script>
-		<script type="text/javascript" src="js/index.js"></script>
-		<script type="text/javascript" src="cordova.js"></script>
 		<script>
-			miperfil();
-		</script>
+			turism();
+		</script> 
     </body>
 </html>
