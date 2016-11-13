@@ -1,3 +1,90 @@
+var appConstants = {
+	localPermanentStorageFolder: "/sdcard/eus.ehu.intel.tta.eurocityapp/",
+	localPermanentStorageFolderImg: function () {
+		return this.localPermanentStorageFolder+"img/";
+	},
+	localPermanentStorageFolderAudio: function () {
+		return this.localPermanentStorageFolder+"audio/";
+	},
+	localPermanentStorageFolderVideo: function () {
+		return this.localPermanentStorageFolder+"video/";
+	},
+	persistentStorageFolder: function () {
+		return cordova.file.externalDataDirectory;
+	},
+	persistentStorageSolutionsFile: "SOLUTIONS.txt",
+	persistentStorageExercisesFile: "EXERCISES.txt",	
+//	serverURL: "http://158.227.64.57:8080/TTA1617_LS-EX_09-11S/",//EHU PUBLIC
+	serverURL: "http://u017633.ehu.eus:28080/TTA1617_LS-EX_11S_PUBLIC/",//EHU PUBLIC
+//	serverURLstatic: "http://158.227.64.57:8080/TTA1617_LS-EX_09-11S/",//EHU PUBLIC
+	serverURLstatic: "http://u017633.ehu.eus:28080/static/TTA1617_LS-EX_11S_PUBLIC/",//EHU
+	uploadFileURL: function() {
+		return this.serverURL+"rest/School/uploadFile"; 
+	},
+	requestLessonsURL: function() {
+		return this.serverURL+"rest/School/requestLessons";
+	},
+	requestInitialDataURL: function() {
+		return this.serverURL+"rest/School/requestInitialData";
+	},
+	requestCalificationURL: function() {
+		return this.serverURL+"rest/School/requestCalification";
+	},
+	addStudentURL: function() {
+		return this.serverURL+"rest/School/addStudent";
+	}
+};
+var fileUtilities = {
+		moveAsync: function (sourceFullPath,destFolder,destName,onSuccess){
+			var url="file://"+sourceFullPath;
+			var destFile=destFolder+destName;
+			var fileTransfer=new FileTransfer();//Crear objeto FileTransfer
+		    fileTransfer.download(url,destFile,//Copiar (descargar) el fichero indicado por URL en destFile
+				function() {//función successCallback: si el fichero se descargó bien
+					window.resolveLocalFileSystemURL(url,//Acceder al fichero original por su URL
+		    				function(fileEntry) {//función successCallback: si se ha podido acceder al fichero original
+								fileEntry.remove(onSuccess);//Borrar el fichero y seguir con onSuccess
+		    				},
+		    				function(error) {
+		    					alert("Source file NOT accesible; not removed");
+		    				}
+		    		);			
+				},
+				function(error) {
+					alert('File not copied. '+'error.code: '+error.code+'\nerror.source: '+error.source+'\nerror.target: '+error.target+'\nerror.http_status: '+error.http_status);
+				}
+			);
+		}
+}
+var photo = {
+		fileFolder:null,
+		fileName:null,
+		takeAsync: function(fileFolder,fileName,onSuccess) {
+			navigator.device.capture.captureImage(
+				function(photoFiles) {
+//					alert("onCaptureSuccess: ");
+					var tempFullPath=photoFiles[0].fullPath; //Begins with "file:"
+					tempFullPath=tempFullPath.substring(tempFullPath.indexOf("/")); //to retrieve "file:"
+					alert("New photo in: "+tempFullPath);
+					
+					fileUtilities.moveAsync(tempFullPath,fileFolder,fileName,
+				      function() {
+							photo.fileFolder=fileFolder;//Guardar en el atributo fileFolder del objeto photo, la carpeta destino
+							photo.fileName=fileName;//Guardar en el atributo fileName del objeto photo, el nuevo nombre del fichero
+							if(onSuccess!=false){
+								onSuccess();
+							}
+		        		}							
+					);
+				},
+				function(e) {
+					var msgText = "Photo error: " + e.message + "(" + e.code + ")";
+					alert(msgText);
+				}
+			);
+//			alert("record2: "+this.fileFolder);
+		}
+}
 var ppal={
 		create: function(){
 			contentDiv=
@@ -15,7 +102,7 @@ var ppal={
 					'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href="ubicacion.html"><strong style="font-size: 35px;">UBICACIÓN</strong></a></td>'+
 					'</tr>'+
 					'<tr>'+
-						'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href=""><strong style="font-size: 35px;">TURISMO</strong></a></td>'+
+						'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href="turismo.html"><strong style="font-size: 35px;">TURISMO</strong></a></td>'+
 					'</tr>'+
 					'<tr>'+
 					'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href=""><strong style="font-size: 35px;">VALORACIÓN</strong></a></td>'+
@@ -31,8 +118,22 @@ var miPerfil={
 		create: function(){
 			contentDiv=
 				'<div style="text-align:center;">'+
-				'<h1>'+localStorage.getItem("user.name")+'</h1>'+
-				'</div>';
+					'<h1>'+localStorage.getItem("user.name")+'</h1>';
+				if (localStorage.getItem("fotoPerfil") === null) {
+					contentDiv+='<h1>¿A que esperas? ¡Sube una foto de perfil!</h1>';
+				}
+				else{
+					contentDiv+=
+						'<div id="fotoPerfil" style="display: inline-block;width: 150px;height: 150px;border-radius: 50%;background-repeat: no-repeat;background-position: center center;background-size: cover;background-image:url(\''+localStorage.getItem("fotoPerfil")+'\')">'+
+				//'<img src="file://'+localStorage.getItem("fotoPerfil")+'" alt="Foto Perfil" id="fotoPerfil" style="width:200px;height:200px;border:2;">'+
+						'</div>';
+				}
+			contentDiv+='<a href="" onclick="takePhoto()" class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>'+
+				'<a href="misDestinos.html" id="button-1" class="ui-btn ui-icon-arrow-r ui-btn-icon-right ui-corner-all">Mis destinos</a>'+
+				'<a href="nuevoViaje.html" id="button-2" class="ui-btn ui-icon-arrow-r ui-btn-icon-right ui-corner-all">Nuevo Viaje</a>'
+				
+				;
 			return contentDiv;
 		}
 }
@@ -40,111 +141,29 @@ var ubicacion={
 		create: function(){
 			contentDiv=
 				'<div style="background-color:'+localStorage.getItem("destino.color")+'" align="center">'+
-				'<strong style="font-size: 35px;">UBICACIÓN</strong>'+
-				'<a href="" onclick=\'responsiveVoice.speak("Ubicación","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+					'<strong style="font-size: 35px;">UBICACIÓN</strong>'+
+					'<a href="" onclick=\'responsiveVoice.speak("Ubicación","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'+
 				'<a href="https://www.google.es/maps" id="button-1" class="ui-btn ui-icon-location ui-btn-icon-left ui-corner-all">Mapas</a>';
 			return contentDiv;
 		}
 }
-var page={
-		create: function(i) {
-			//var pageDiv='<div data-role="page" id="page-'+i+'">';
-			var headerDiv=
-				'<div data-role="header" data-position="fixed">';
-				switch(i){
-					case 1:
-						headerDiv+=
-							'<div style="width:30%;display: inline-block;">'+
-						'<a href="miPerfil.html">'+
-		  					'<img src="img/user-icon.png" alt="Perfil" style="width:100px;height:100px;border:0;">'+
-						'</a>'+
-					'</div>'+
-					'<div style="width:30%;display: inline-block;">'+
-						'<a href="misDestinos.html">'+
-		  					'<img src="img/home-icon.png" alt="Perfil" style="width:100px;height:100px;border:0;">'+
-						'</a>'+
-					'</div>'+
-					'<div class="perfil-options" style="text-align:center;display: inline-block;">'+
-						'<fieldset data-role="collapsible" id="collapsible-1" data-collapsed-icon="bullets" data-expanded-icon="bars" data-iconpos="right">'+
-							'<h1>Mi Perfil</h1>'+
-							'<p>Collapsible content.</p>'+
-							'<p>Collapsible content2.</p>'+
-						'</fieldset>'+
-					'</div>';
-						break;
-				}
-				headerDiv+='</div>';
-				
-			
-			var contentDiv=
-				'<div data-role="content" id="pageContent-'+i+'" style="text-align:center;">'+
-				'<h1>Hola</h1>';
-			contentDiv+='</div>';
-//					'<div id="statementDiv-'+i+'" style="text-align:left;">'+
-//					'</div>'+
-//					'<div id="solutionDiv-'+i+'" class="ui-grid-solo">';
-//			switch(exercises.exercise[i].exerciseType){
-//				case "img":
-//					contentDiv+=
-//						'<div class="ui-block-a" style="text-align:center;vertical-align:middle;">'+
-//							'<a href="#" id="button-'+i+'-1" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="takePhoto('+i+')">TAKE PHOTO</a>'+
-//							'<label for="image-'+i+'-1" id="fileName-'+i+'-1" style="text-align:left;word-wrap:break-word;"></label>'+
-//							'<img id="image-'+i+'-1" alt="" src="" style="display:none;width:auto;height:auto;"/>'+
-//						'</div>'+
-//						'<div class="ui-block-a" style="text-align:center;vertical-align:middle;">'+
-//							'<a href="#" id="button-'+i+'-2" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="sendResult('+i+')">SEND PHOTO</a>'+
-//						'</div>';
-//					break;
-//				case "audio":
-//					contentDiv+=
-//						'<div class="ui-block-a" style="text-align:center;vertical-align:middle;">'+
-//							'<a href="#" id="button-'+i+'-1-1" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="startAudioRecord('+i+')">START RECORDING</a>'+
-//							'<a href="#" id="button-'+i+'-1-2" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="stopAudioRecord('+i+')">STOP RECORDING</a>'+
-//							'<label for="audio-'+i+'-1" id="fileName-'+i+'-1" style="text-align:left;word-wrap:break-word;"></label>'+
-//							'<audio id="audio-'+i+'-1" controls="controls" style="display:none">'+
-//								'<source id="audioSrc-'+i+'-1" src=""/>'+
-//							'</audio>'+
-//						'</div>'+
-//						'<div class="ui-block-a" style="text-align:center;vertical-align:middle;">'+
-//							'<a href="#" id="button-'+i+'-2" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="sendResult('+i+')">SEND AUDIO</a>'+
-//						'</div>';
-//					break;
-//				case "video":
-//					contentDiv+=
-//						'<div class="ui-block-a" style="text-align:center;vertical-align:middle;">'+
-//							'<a href="#" id="button-'+i+'-1" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="recordVideo('+i+')">RECORD</a>'+
-//							'<label for="video-'+i+'-1" id="fileName-'+i+'-1" style="text-align:left;word-wrap:break-word;"></label>'+
-//							'<video id="video-'+i+'-1" controls="controls" style="display:none" width="95%" height="auto">'+
-//								'<source id="videoSrc-'+i+'-1" src=""/>'+
-//							'</video>'+
-//						'</div>'+
-//						'<div class="ui-block-a" style="text-align:center;vertical-align:middle;">'+
-//							'<a href="#" id="button-'+i+'-2" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="sendResult('+i+')">SEND VIDEO</a>'+
-//						'</div>';						
-//					break;	
-//			}
-//			
-//			contentDiv+=						
-//						'<div class="ui-block-a" style="text-align:center;vertical-align:middle;">'+
-//							'<a href="#" id="button-'+i+'-3" class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="queryCalification('+i+')">QUERY CALIFICATION</a>'+
-//							'<p id="calification-'+i+'">CALIFICATION: NONE</p>'+
-//						'</div>'+				
-//					'</div>'+
-//				'</div>';		
-			
-//			var footerDiv=
-//			'<div data-role="footer" data-position="fixed" style="padding-top:1%;">'+
-//				'<div class="ui-grid-b">'+
-//					'<div class="ui-block-a" style="text-align:left;width:20%;"><a href="#page-'+(i-1)+'" id="prev-'+i+'" class="ui-btn ui-icon-arrow-l ui-btn-icon-left ui-mini ui-btn-inline ui-corner-all" data-transition="turn">Prev</a></div>'+
-//					'<div class="ui-block-b" style="text-align:center;width:60%;"><a class="ui-btn ui-mini ui-btn-inline ui-corner-all" onclick="saveWork()">SAVE</a></div>'+
-//					'<div class="ui-block-c" style="text-align:right;width:20%;"><a href="#page-'+(i+1)+'" id="next-'+i+'" class="ui-btn ui-icon-arrow-r ui-btn-icon-left ui-mini ui-btn-inline ui-corner-all" data-transition="turn">Next</a></div>'+
-//				'</div>'+
-//			'</div>';
-			
-			var pageDiv=headerDiv+contentDiv;
-			
-//			alert("create2");
-			return pageDiv;
-		},
+var turismo={
+		create: function(){
+			contentDiv=
+				'<div style="background-color:'+localStorage.getItem("destino.color")+'" align="center">'+
+					'<strong style="font-size: 35px;">Turismo</strong>'+
+					'<a href="" onclick=\'responsiveVoice.speak("Turismo","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>'+
+				'<div >'+
+					'<a href="" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Lugares emblemáticos</a>'+
+					'<a href="" onclick=\'responsiveVoice.speak("Lugares emblemáticos","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>'+
+				'<div >'+
+					'<a href="" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Gastronomía</a>'+
+					'<a href="" onclick=\'responsiveVoice.speak("Gastronomía","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>'
+			;
+			return contentDiv;
 		}
+}
