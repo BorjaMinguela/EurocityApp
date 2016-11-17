@@ -65,7 +65,7 @@ var photo = {
 //					alert("onCaptureSuccess: ");
 					var tempFullPath=photoFiles[0].fullPath; //Begins with "file:"
 					tempFullPath=tempFullPath.substring(tempFullPath.indexOf("/")); //to retrieve "file:"
-					alert("New photo in: "+tempFullPath);
+					//alert("New photo in: "+tempFullPath);
 					
 					fileUtilities.moveAsync(tempFullPath,fileFolder,fileName,
 				      function() {

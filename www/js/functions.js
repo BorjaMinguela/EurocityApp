@@ -1,5 +1,4 @@
 function seleccionDestino(ciudad){
-	if (typeof(Storage) == "undefined") alert("storage undefined");
 	if (ciudad=="lisboa"){
 		localStorage.setItem("destino.color", "lightgreen");
 		localStorage.setItem("destino.name", "lisboa");
@@ -27,7 +26,7 @@ function takePhoto(){
 				var rutaPerfil=photo.fileFolder+photo.fileName;
 				localStorage.setItem("fotoPerfil",rutaPerfil);
 				//$("#fotoPerfil").attr("src","file://"+localStorage.getItem("fotoPerfil"));//+"?"+(new Date()).getTime());
-				alert("Photo in: "+localStorage.getItem("fotoPerfil"));
+				//alert("Photo in: "+localStorage.getItem("fotoPerfil"));
 				location.reload();
 			}
 			);
