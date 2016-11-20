@@ -1,3 +1,4 @@
+//Constantes de la APP
 var appConstants = {
 	localPermanentStorageFolder: "/sdcard/eus.ehu.intel.tta.eurocityapp/",
 	localPermanentStorageFolderImg: function () {
@@ -14,26 +15,27 @@ var appConstants = {
 	},
 	persistentStorageSolutionsFile: "SOLUTIONS.txt",
 	persistentStorageExercisesFile: "EXERCISES.txt",	
-//	serverURL: "http://158.227.64.57:8080/TTA1617_LS-EX_09-11S/",//EHU PUBLIC
-	serverURL: "http://u017633.ehu.eus:28080/TTA1617_LS-EX_11S_PUBLIC/",//EHU PUBLIC
+	serverURL: "http://192.168.0.15:8080/EurocityServer/",//EHU PUBLIC
+	//serverURL: "http://u017633.ehu.eus:28080/TTA1617_LS-EX_11S_PUBLIC/",//EHU PUBLIC
 //	serverURLstatic: "http://158.227.64.57:8080/TTA1617_LS-EX_09-11S/",//EHU PUBLIC
 	serverURLstatic: "http://u017633.ehu.eus:28080/static/TTA1617_LS-EX_11S_PUBLIC/",//EHU
-	uploadFileURL: function() {
-		return this.serverURL+"rest/School/uploadFile"; 
+	requestUsersURL: function() {
+		return this.serverURL+"rest/Eurocity/requestUsers"; 
 	},
-	requestLessonsURL: function() {
-		return this.serverURL+"rest/School/requestLessons";
+	requestUserURL: function() {
+		return this.serverURL+"rest/Eurocity/requestUser"; 
 	},
-	requestInitialDataURL: function() {
-		return this.serverURL+"rest/School/requestInitialData";
-	},
-	requestCalificationURL: function() {
-		return this.serverURL+"rest/School/requestCalification";
-	},
-	addStudentURL: function() {
-		return this.serverURL+"rest/School/addStudent";
+	addUserURL: function() {
+		return this.serverURL+"rest/Eurocity/addUser"; 
 	}
 };
+
+//JSON
+var usuarioJSON = {
+		nombre: null,
+		fotoPerfil: null
+};
+
 var fileUtilities = {
 		moveAsync: function (sourceFullPath,destFolder,destName,onSuccess){
 			var url="file://"+sourceFullPath;

@@ -33,15 +33,93 @@ function takePhoto(){
 }
 
 function login(){
-	//Login TBD	
-//	var pageDiv=page.create(1);
-//	alert(pageDiv);
-//	document.body.innerHTML=pageDiv;
-	//$("body").append(pageDiv);
-	//$("body").enhanceWithin();
 	var loginVal=$("#login").val();
-	localStorage.setItem("user.name",loginVal);
+	if((loginVal!=null&&loginVal!="")){
+//		$.getJSON(appConstants.requestUserURL()+"?userName="+loginVal,//Consultar en el Servidor si existe el usuario
+//				function(data,status) {//Función callback
+//					if(status=="success"){//Si la HTTP-RESPONSE es OK
+//						if(data.nombre==loginVal){
+//							alert("Nombre: "+data.nombre+" existe.");
+//							localStorage.setItem("user.name",loginVal);
+//						}
+//						else{
+//							alert("No existe el usuario con nombre "+loginVal);
+//							loginVal="";
+//						}
+//					}
+//					else {
+//						alert("NO RESPONSE FROM SERVER");
+//						loginVal="";
+//					}
+//				}
+//			);
+		$.ajax({
+			async: false,
+			dataType: "json",
+			url: appConstants.requestUserURL()+"?userName="+loginVal,
+			success: function(data){
+				if(data.nombre==loginVal){
+					alert("Nombre: "+data.nombre+" existe.");
+					localStorage.setItem("user.name",loginVal);
+				}
+				else{
+					alert("No existe el usuario con nombre "+loginVal);
+					loginVal="";
+				}
+			},
+			error: function(){
+				alert("NO RESPONSE FROM SERVER");
+				loginVal="";
+			}
+			
+		})
+		if (loginVal=="") return false;
+		
+		}
+	else{
+		alert("Introduzca un nombre válido");
+		return false;
+	}
 }
+function addUser(){
+	var loginVal=$("#login").val();
+	if((loginVal!=null&&loginVal!="")){
+		usuarioJSON.nombre=loginVal;
+		$.getJSON(appConstants.requestUserURL()+"?userName="+loginVal,//Consultar en el Servidor si existe el usuario
+				function(data,status) {//Función callback
+					if(status=="success"){//Si la HTTP-RESPONSE es OK
+						if (data.nombre==loginVal){
+							alert("Nombre: "+data.nombre+" existe.")
+						}
+						else alert("No existe ese nombre")
+//						else{
+//							$.post(appConstants.addStudentURL(),JSON.stringify(student),
+//									function(data,status) {//Función callback
+//								if(status=="success"){//Si la HTTP-RESPONSE es OK
+//									alert("ya estas dado de alta, tu login es"+data);//Indicar al usuario q está dado de alta y cuál es su login
+//										
+//									}
+//									else {
+//										alert("NO RESPONSE FROM SERVER");
+//									}			
+//								},
+//								"text"//Content-type esperado en HTTP-RESPONSE: text
+//							);
+//						}
+//						else
+//							alert("All fields are required");
+//						}
+					}
+					else {
+						alert("NO RESPONSE FROM SERVER");
+					}
+				}
+			);
+		
+	}
+	
+}
+
 
 
 function cabecera(){
