@@ -27,14 +27,22 @@ var appConstants = {
 	},
 	addUserURL: function() {
 		return this.serverURL+"rest/Eurocity/addUser"; 
+	},
+	addValoracionURL: function() {
+		return this.serverURL+"rest/Eurocity/addValoracion"; 
 	}
 };
 
 //JSON
 var usuarioJSON = {
-		nombre: null,
-		fotoPerfil: null
+		nombre: null
 };
+
+var valoracionJSON = {
+		nota: null,
+		user: null,
+		lugar: null
+}
 
 var fileUtilities = {
 		moveAsync: function (sourceFullPath,destFolder,destName,onSuccess){
@@ -94,7 +102,8 @@ var ppal={
 					'<h1>¿En qué te puedo ayudar?</h1>'+
 				'</div>'+
 				'<div style="display:inline-block;">'+
-					'<img src="img/doge.gif" style="width:120px;height:120px;">'+
+					//'<img src="img/doge.gif" style="width:120px;height:120px;">'+
+					'<img src="https://dl.dropboxusercontent.com/s/40wdqko9el1oa7y/girl.gif?dl=0" style="width:120px;height:120px;">'+
 				'</div>'+
 				'<table style="width:100%">'+
 					'<tr>'+
@@ -107,7 +116,7 @@ var ppal={
 						'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href="turismo.html"><strong style="font-size: 35px;">TURISMO</strong></a></td>'+
 					'</tr>'+
 					'<tr>'+
-					'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href=""><strong style="font-size: 35px;">VALORACIÓN</strong></a></td>'+
+					'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href="valoracion.html"><strong style="font-size: 35px;">VALORACIÓN</strong></a></td>'+
 					'</tr>'+
 					'<tr>'+
 						'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href=""><strong style="font-size: 35px;">¿CUÁNTO HAS APRENDIDO?</strong></a></td>'+
@@ -121,12 +130,12 @@ var miPerfil={
 			contentDiv=
 				'<div style="text-align:center;">'+
 					'<h1>'+localStorage.getItem("user.name")+'</h1>';
-				if (localStorage.getItem("fotoPerfil") === null) {
+				if (localStorage.getItem("fotoPerfil"+localStorage.getItem("user.name")) === null) {
 					contentDiv+='<h1>¿A que esperas? ¡Sube una foto de perfil!</h1>';
 				}
 				else{
 					contentDiv+=
-						'<div id="fotoPerfil" style="display: inline-block;width: 150px;height: 150px;border-radius: 50%;background-repeat: no-repeat;background-position: center center;background-size: cover;background-image:url(\''+localStorage.getItem("fotoPerfil")+'\')">'+
+						'<div id="fotoPerfil" style="display: inline-block;width: 150px;height: 150px;border-radius: 50%;background-repeat: no-repeat;background-position: center center;background-size: cover;background-image:url(\''+localStorage.getItem("fotoPerfil"+localStorage.getItem("user.name"))+'\')">'+
 				//'<img src="file://'+localStorage.getItem("fotoPerfil")+'" alt="Foto Perfil" id="fotoPerfil" style="width:200px;height:200px;border:2;">'+
 						'</div>';
 				}
@@ -166,6 +175,34 @@ var turismo={
 					'<a href="" onclick=\'responsiveVoice.speak("Gastronomía","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'
 			;
+			return contentDiv;
+		}
+}
+var valoracion={
+		create: function(){
+			contentDiv=
+				'<div style="background-color:red" align="center">'+
+				'<strong style="font-size: 35px;">Valoración</strong>'+
+				'<a href="" onclick=\'responsiveVoice.speak("Valoración","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>'+
+				'<h1>¡Pon una nota del 1 al 10 valorando tu experiencia en el viaje!</h1>'+
+				'<div class="ui-field-contain">'+
+					'<label for="select-1">Puntuación:</label>'+
+					'<select name="select-1" id="puntos">'+
+						'<option value="1">1</option>'+
+						'<option value="2">2</option>'+
+						'<option value="3">3</option>'+
+						'<option value="4">4</option>'+
+						'<option value="5">5</option>'+
+						'<option value="6">6</option>'+
+						'<option value="7">7</option>'+
+						'<option value="8">8</option>'+
+						'<option value="9">9</option>'+
+						'<option value="10">10</option>'+
+					'</select>'+
+				'</div>'+
+				'<a href="" id="button-1" class="ui-btn ui-icon-arrow-r ui-btn-icon-right ui-corner-all" onclick="addValoracion()">¡Valorar!</a>'					
+				;
 			return contentDiv;
 		}
 }
