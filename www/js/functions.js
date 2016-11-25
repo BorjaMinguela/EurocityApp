@@ -34,32 +34,18 @@ function takePhoto(){
 
 function login(){
 	var loginVal=$("#login").val().trim();//Para quitar espacios extra, que daba error
-	if((loginVal!=null&&loginVal!="")){
-//		$.getJSON(appConstants.requestUserURL()+"?userName="+loginVal,//Consultar en el Servidor si existe el usuario
-//				function(data,status) {//Función callback
-//					if(status=="success"){//Si la HTTP-RESPONSE es OK
-//						if(data.nombre==loginVal){
-//							alert("Nombre: "+data.nombre+" existe.");
-//							localStorage.setItem("user.name",loginVal);
-//						}
-//						else{
-//							alert("No existe el usuario con nombre "+loginVal);
-//							loginVal="";
-//						}
-//					}
-//					else {
-//						alert("NO RESPONSE FROM SERVER");
-//						loginVal="";
-//					}
-//				}
-//			);
+	if(loginVal!=null&&loginVal!=""){
+		if (loginVal=="offline"){//modo offline para cuando no este el servidor
+			alert("Modo offline");
+			localStorage.setItem("user.name",loginVal);
+			return true;
+		}
 		$.ajax({
-			async: false,
+			async: false,//peticion asincrona
 			dataType: "json",
 			url: appConstants.requestUserURL()+"?userName="+loginVal,
 			success: function(data){
 				if(data.nombre==loginVal){
-					alert("Nombre: "+data.nombre+" existe.");
 					localStorage.setItem("user.name",loginVal);
 				}
 				else{
@@ -70,8 +56,7 @@ function login(){
 			error: function(){
 				alert("NO RESPONSE FROM SERVER");
 				loginVal="";
-			}
-			
+			}			
 		})
 		if (loginVal=="") return false;
 		
@@ -95,7 +80,7 @@ function addUser(){
 						else{
 							alert("No existe ese nombre, añadiendo nuevo usuario")
 							usuarioJSON.nombre=loginVal;
-							$.ajax({
+							$.ajax({//rest por post de json
 								type: 'post',
 								contentType: 'application/json',
 								url: appConstants.addUserURL(),
@@ -108,23 +93,8 @@ function addUser(){
 										alert("No response from server");
 									}
 								},
-								data: JSON.stringify(usuarioJSON)
-									
-								
-								
+								data: JSON.stringify(usuarioJSON)								
 							});
-							//$.post(appConstants.addUserURL(),JSON.stringify(usuarioJSON),
-//									function(data,status){
-//								if(status=="success"){
-//									alert("data: "+data);
-//									
-//								}
-//								else{
-//									alert("No response from server");
-//								}
-//							},
-//							"text"
-//							);	
 						}
 					}
 					else {
@@ -170,4 +140,102 @@ function turism(){
 }
 function valor(){
 	document.getElementById("valoracion").innerHTML=valoracion.create();
+}
+function tests1(){
+	$.getJSON(appConstants.requestEjercicioURL()+"?categoria=1&ciudad="+localStorage.getItem("destino.name"),
+			function(data,status) {//Función callback
+				if(status=="success"){//Si la HTTP-RESPONSE es OK
+					ejerciciosJSON.ejercicio=data.ejercicio;
+					document.getElementById("ejercicios").innerHTML=ejercicios.create();
+				}
+				else {
+					alert("NO RESPONSE FROM SERVER");
+				}
+			}
+		);
+	
+}
+
+function tests2(){
+	$.getJSON(appConstants.requestEjercicioURL()+"?categoria=2&ciudad="+localStorage.getItem("destino.name"),
+			function(data,status) {//Función callback
+				if(status=="success"){//Si la HTTP-RESPONSE es OK
+					ejerciciosJSON.ejercicio=data.ejercicio;
+					document.getElementById("ejercicios").innerHTML=ejercicios.create2();
+				}
+				else {
+					alert("NO RESPONSE FROM SERVER");
+				}
+			}
+		);
+	
+}
+
+function tests3(){
+	document.getElementById("ejercicios").innerHTML=ejercicios.create3();
+	
+}
+
+function corregir(){
+	var correctos=0;
+	var nEjercicios=ejerciciosJSON.ejercicio.length;
+	for(i=0;i<nEjercicios;i++){
+		if (document.getElementById("respuesta"+i).value.trim().toUpperCase()==ejerciciosJSON.ejercicio[i].solucion.toUpperCase()){//quitamos espacios y lo hacemos case insensitive
+			document.getElementById("enunciado"+i).style.color="green";
+			correctos++;
+		}//si es correcto se pone el enunciado en verde, sino, en rojo
+		else{
+			document.getElementById("enunciado"+i).style.color="red";
+		}
+	}
+	var nota=Math.round(correctos/nEjercicios*10);
+	alert("Nota: "+nota);
+	
+	notaJSON.user=localStorage.getItem("user.name");
+	notaJSON.nota=nota;
+	notaJSON.ejercicio=ejerciciosJSON.ejercicio[0];
+	$.ajax({
+		type: 'post',
+		contentType: 'application/json',
+		url: appConstants.addNotaURL(),
+		success: function(data){
+				alert(data);			
+		},
+		data: JSON.stringify(notaJSON)			
+	});
+	
+	document.getElementById("ejBoton").innerHTML="Siguiente";
+	document.getElementById("ejBoton").setAttribute('onclick','tests2()');
+}
+
+function corregir2(){
+	var correctos=0;
+	var nEjercicios=ejerciciosJSON.ejercicio.length;
+	for(i=0;i<nEjercicios;i++){
+		if (document.getElementById("respuesta"+i).value.trim()==ejerciciosJSON.ejercicio[i].solucion.trim()){
+			document.getElementById("enunciado"+i).style.color="green";
+			correctos++;
+		}
+		else{
+			document.getElementById("enunciado"+i).style.color="red";
+		}
+	}
+	var nota=Math.round(correctos/nEjercicios*10);
+	alert("Nota: "+nota);
+	
+	notaJSON.user=localStorage.getItem("user.name");
+	notaJSON.nota=nota;
+	notaJSON.ejercicio=ejerciciosJSON.ejercicio[0];
+	$.ajax({
+		type: 'post',
+		contentType: 'application/json',
+		url: appConstants.addNotaURL(),
+		success: function(data){
+				alert(data);			
+		},
+		data: JSON.stringify(notaJSON)			
+	});
+
+	document.getElementById("ejBoton").innerHTML="Siguiente";
+	document.getElementById("ejBoton").setAttribute('onclick','tests3()');
 }
