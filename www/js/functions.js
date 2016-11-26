@@ -121,26 +121,27 @@ function addValoracion(){
 	});
 }
 
-function cabecera(){
-	var div = document.getElementById('content');
+function addComentario(categoria){
+	var coment = document.getElementById("coment").value.trim();
+	if((coment!=null&&coment!="")){
+		comentarioJSON.comentario=coment;
+		comentarioJSON.categoria=categoria;
+		comentarioJSON.user=localStorage.getItem("user.name");
+		comentarioJSON.lugar=localStorage.getItem("destino.name");
+		$.ajax({
+			type: 'post',
+			contentType: 'application/json',
+			url: appConstants.addComentarioURL(),
+			success: function(data){
+					alert(data);
+					location.reload(true);
+			},
+			data: JSON.stringify(comentarioJSON)			
+		});
+	}
+	else alert("No se permiten comentarios vacíos");
+}
 
-	div.innerHTML = contenido;
-}
-function miperfil(){
-	document.getElementById("miperfil").innerHTML=miPerfil.create();
-}
-function viajeppal(){
-	document.getElementById("ppal").innerHTML=ppal.create();
-}
-function ubi(){
-	document.getElementById("ubicacion").innerHTML=ubicacion.create();
-}
-function turism(){
-	document.getElementById("turismo").innerHTML=turismo.create();
-}
-function valor(){
-	document.getElementById("valoracion").innerHTML=valoracion.create();
-}
 function tests1(){
 	$.getJSON(appConstants.requestEjercicioURL()+"?categoria=1&ciudad="+localStorage.getItem("destino.name"),
 			function(data,status) {//Función callback
@@ -238,4 +239,82 @@ function corregir2(){
 
 	document.getElementById("ejBoton").innerHTML="Siguiente";
 	document.getElementById("ejBoton").setAttribute('onclick','tests3()');
+}
+
+
+function cabecera(){
+	var div = document.getElementById('content');
+
+	div.innerHTML = contenido;
+}
+function miperfil(){
+	document.getElementById("miperfil").innerHTML=miPerfil.create();
+}
+function viajeppal(){
+	document.getElementById("ppal").innerHTML=ppal.create();
+}
+function ubi(){
+	document.getElementById("ubicacion").innerHTML=ubicacion.create();
+}
+function turism(){
+	document.getElementById("turismo").innerHTML=turismo.create();
+}
+function valor(){
+	document.getElementById("valoracion").innerHTML=valoracion.create();
+}
+function lugares(){
+	$.getJSON(appConstants.requestFotosURL()+"?usuario=interes&ciudad="+localStorage.getItem("destino.name"),
+			function(data,status) {//Función callback
+				if(status=="success"){//Si la HTTP-RESPONSE es OK
+					fotosJSON.foto=data.foto;
+					$.getJSON(appConstants.requestComentariosURL()+"?categoria=interes&ciudad="+localStorage.getItem("destino.name"),
+							function(data,status) {//Función callback
+								if(status=="success"){//Si la HTTP-RESPONSE es OK
+									comentariosJSON.comentario=data.comentario;
+									document.getElementById("lugaresEmb").innerHTML=lugaresEmb.create();
+								}
+								else {
+									alert("NO RESPONSE FROM SERVER");
+								}
+							}
+						);
+				}
+				else {
+					alert("NO RESPONSE FROM SERVER");
+				}
+			}
+		);
+	
+}
+function gastro(){
+	$.getJSON(appConstants.requestFotosURL()+"?usuario=gastronomia&ciudad="+localStorage.getItem("destino.name"),
+			function(data,status) {//Función callback
+				if(status=="success"){//Si la HTTP-RESPONSE es OK
+					fotosJSON.foto=data.foto;
+					$.getJSON(appConstants.requestComentariosURL()+"?categoria=gastronomia&ciudad="+localStorage.getItem("destino.name"),
+							function(data,status) {//Función callback
+								if(status=="success"){//Si la HTTP-RESPONSE es OK
+									comentariosJSON.comentario=data.comentario;
+									document.getElementById("gastronomia").innerHTML=gastronomia.create();
+								}
+								else {
+									alert("NO RESPONSE FROM SERVER");
+								}
+							}
+						);
+				}
+				else {
+					alert("NO RESPONSE FROM SERVER");
+				}
+			}
+		);
+	
+}
+function showhideFotos(){
+	var e = document.getElementById("fotosDiv");
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+}
+function showhideForo(){
+	var e = document.getElementById("foroDiv");
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
 }

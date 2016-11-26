@@ -36,6 +36,15 @@ var appConstants = {
 	},
 	addNotaURL: function() {
 		return this.serverURL+"rest/Eurocity/addNota"; 
+	},
+	requestFotosURL: function() {
+		return this.serverURL+"rest/Eurocity/requestFotos"; 
+	},
+	requestComentariosURL: function() {
+		return this.serverURL+"rest/Eurocity/requestComentarios"; 
+	},
+	addComentarioURL: function() {
+		return this.serverURL+"rest/Eurocity/addComentario"; 
 	}
 };
 
@@ -67,6 +76,30 @@ var notaJSON = {
 			lugar: null
 		}
 }
+
+var fotosJSON = {
+		foto: [{
+			path:null,
+			user:null,
+			lugar: null
+		}]
+}
+
+var comentariosJSON = {
+		comentario: [{
+			comentario:null,
+			categoria:null,
+			user: null,
+			lugar: null
+		}]
+}
+var comentarioJSON = {
+			comentario:null,
+			categoria:null,
+			user: null,
+			lugar: null
+}
+
 
 var fileUtilities = {
 		moveAsync: function (sourceFullPath,destFolder,destName,onSuccess){
@@ -204,14 +237,176 @@ var turismo={
 					'<a href="" onclick=\'responsiveVoice.speak("Turismo","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'+
 				'<div >'+
-					'<a href="" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Lugares emblemáticos</a>'+
+					'<a href="lugaresEmblematicos.html" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Lugares emblemáticos</a>'+
 					'<a href="" onclick=\'responsiveVoice.speak("Lugares emblemáticos","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'+
 				'<div >'+
-					'<a href="" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Gastronomía</a>'+
+					'<a href="gastronomia.html" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Gastronomía</a>'+
 					'<a href="" onclick=\'responsiveVoice.speak("Gastronomía","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'
 			;
+			return contentDiv;
+		}
+}
+var lugaresEmb={
+		create: function(){
+			contentDiv=
+				'<div style="background-color:'+localStorage.getItem("destino.color")+'" align="center">'+
+					'<strong style="font-size: 35px;">Lugares emblemáticos</strong>'+
+					'<a href="" onclick=\'responsiveVoice.speak("Lugares emblemáticos","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>';
+				
+					
+			if (localStorage.getItem("destino.name")=="Londres"){
+				contentDiv+=
+					'<div >'+
+						'<ul>'+
+						  '<li>London Eye</li>'+
+						  '<li>Buckingham palace</li>'+
+						  '<li>Big Ben</li>'+
+						'</ul>'+
+					'</div>';
+			}
+			else if (localStorage.getItem("destino.name")=="Lisboa"){
+				contentDiv+=
+					'<div >'+
+						'<ul>'+
+						  '<li>Plaza del comercio</li>'+
+						  '<li>Torre de Belém</li>'+
+						  '<li>Barrio de la Alfama</li>'+
+						'</ul>'+
+					'</div>';
+			}
+			else if (localStorage.getItem("destino.name")=="Paris"){
+				contentDiv+=
+				'<div >'+
+				'<ul>'+
+				  '<li>Torre Eiffel</li>'+
+				  '<li>Catedral de Notre Dame</li>'+
+				  '<li>Arco del triunfo</li>'+
+				'</ul>'+
+			'</div>';
+			}
+			else if (localStorage.getItem("destino.name")=="Roma"){
+				contentDiv+=
+					'<div >'+
+						'<ul>'+
+						  '<li>Coliseo</li>'+
+						  '<li>Fontana de Trevi</li>'+
+						  '<li>Foro Romano</li>'+
+						'</ul>'+
+					'</div>';
+			}
+			contentDiv+=
+			'<div id="foroDiv" style="display:none;">'+
+			'<label>Introduzca tu comentario</label>'+
+			'<input id="coment" type="text" placeholder="Comentario" name="un" />'+
+				'<a href="" class="ui-btn ui-icon-comment ui-btn-icon-right ui-corner-all" onclick="addComentario(\'interes\')">Comentar!</a>';
+			for(i=0;i<comentariosJSON.comentario.length;i++){
+				contentDiv+=
+				'<div class="ui-field-contain">'+
+				'<p><b>'+comentariosJSON.comentario[i].user+': </b>'+comentariosJSON.comentario[i].comentario+'</p>'+
+				'<a href="" onclick=\'responsiveVoice.speak("'+comentariosJSON.comentario[i].comentario+'","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>';
+			}
+			contentDiv+='</div>';
+			
+			contentDiv+=
+				'<a href="" onclick="showhideForo()" class="ui-btn ui-icon-arrow-u ui-btn-icon-right ui-corner-all">Comentarios</a>'+
+				'<a href="" onclick="showhideFotos()" class="ui-btn ui-icon-arrow-d ui-btn-icon-right ui-corner-all">Fotos</a>'+
+				
+				'<div id="fotosDiv" style="display:none;">';
+					for(i=0;i<fotosJSON.foto.length;i++){
+					contentDiv+=
+					'<div class="ui-field-contain">'+
+						'<img src="'+fotosJSON.foto[i].path+'>'+
+					'</div>';
+				}
+				contentDiv+='</div>';
+				
+			return contentDiv;
+		}
+}
+
+var gastronomia={
+		create: function(){
+			contentDiv=
+				'<div style="background-color:'+localStorage.getItem("destino.color")+'" align="center">'+
+					'<strong style="font-size: 35px;">Gastronomía</strong>'+
+					'<a href="" onclick=\'responsiveVoice.speak("Gastronomía","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>';
+				
+					
+			if (localStorage.getItem("destino.name")=="Londres"){
+				contentDiv+=
+					'<div >'+
+						'<ul>'+
+						  '<li>Fish and chips</li>'+
+						  '<li>Crepes</li>'+
+						  '<li>Pies and kornish pasties</li>'+
+						  '<li>Backed/jacket potato</li>'+
+						'</ul>'+
+					'</div>';
+			}
+			else if (localStorage.getItem("destino.name")=="Lisboa"){
+				contentDiv+=
+					'<div >'+
+						'<ul>'+
+						  '<li>Bolinhas de berlim</li>'+
+						  '<li>Bacalao</li>'+
+						  '<li>Pasteles de belem</li>'+
+						  '<li>Francesinha</li>'+
+						'</ul>'+
+					'</div>';
+			}
+			else if (localStorage.getItem("destino.name")=="Paris"){
+				contentDiv+=
+				'<div >'+
+				'<ul>'+
+				  '<li>Ratatouille</li>'+
+				  '<li>Macarons</li>'+
+				  '<li>Foie grass</li>'+
+				  '<li>Omelettes</li>'+
+				'</ul>'+
+			'</div>';
+			}
+			else if (localStorage.getItem("destino.name")=="Roma"){
+				contentDiv+=
+					'<div >'+
+						'<ul>'+
+						  '<li>Supplí alla Romana</li>'+
+						  '<li>Sphagetti alla Carbonara</li>'+
+						  '<li>Gelato</li>'+
+						'</ul>'+
+					'</div>';
+			}
+			contentDiv+=
+			'<div id="foroDiv" style="display:none;">'+
+			'<label>Introduzca tu comentario</label>'+
+			'<input id="coment" type="text" placeholder="Comentario" name="un" />'+
+				'<a href="" class="ui-btn ui-icon-comment ui-btn-icon-right ui-corner-all" onclick="addComentario(\'gastronomia\')">Comentar!</a>';
+			for(i=0;i<comentariosJSON.comentario.length;i++){
+				contentDiv+=
+				'<div class="ui-field-contain">'+
+				'<p><b>'+comentariosJSON.comentario[i].user+': </b>'+comentariosJSON.comentario[i].comentario+'</p>'+
+				'<a href="" onclick=\'responsiveVoice.speak("'+comentariosJSON.comentario[i].comentario+'","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>';
+			}
+			contentDiv+='</div>';
+			
+			contentDiv+=
+				'<a href="" onclick="showhideForo()" class="ui-btn ui-icon-arrow-u ui-btn-icon-right ui-corner-all">Comentarios</a>'+
+				'<a href="" onclick="showhideFotos()" class="ui-btn ui-icon-arrow-d ui-btn-icon-right ui-corner-all">Fotos</a>'+
+				
+				'<div id="fotosDiv" style="display:none;">';
+					for(i=0;i<fotosJSON.foto.length;i++){
+					contentDiv+=
+					'<div class="ui-field-contain">'+
+						'<img src="'+fotosJSON.foto[i].path+'>'+
+					'</div>';
+				}
+				contentDiv+='</div>';
+				
 			return contentDiv;
 		}
 }
