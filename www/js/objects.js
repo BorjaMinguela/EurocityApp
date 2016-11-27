@@ -15,8 +15,8 @@ var appConstants = {
 	},
 	persistentStorageSolutionsFile: "SOLUTIONS.txt",
 	persistentStorageExercisesFile: "EXERCISES.txt",	
-	serverURL: "http://192.168.0.15:8080/EurocityServer/",//EHU PUBLIC
-	//serverURL: "http://u017633.ehu.eus:28080/TTA1617_LS-EX_11S_PUBLIC/",//EHU PUBLIC
+	//serverURL: "http://192.168.0.15:8080/EurocityServer/",//EHU PUBLIC
+	serverURL: "http://u017633.ehu.eus:28080/EurocityServer/",//EHU PUBLIC
 //	serverURLstatic: "http://158.227.64.57:8080/TTA1617_LS-EX_09-11S/",//EHU PUBLIC
 	serverURLstatic: "http://u017633.ehu.eus:28080/static/TTA1617_LS-EX_11S_PUBLIC/",//EHU
 	requestUsersURL: function() {
