@@ -31,6 +31,9 @@ var appConstants = {
 	addUserURL: function() {
 		return this.serverURL+"rest/Eurocity/addUser"; 
 	},
+	deleteUserURL: function() {
+		return this.serverURL+"rest/Eurocity/deleteUser"; 
+	},
 	addValoracionURL: function() {
 		return this.serverURL+"rest/Eurocity/addValoracion"; 
 	},
@@ -40,11 +43,20 @@ var appConstants = {
 	requestFotosURL: function() {
 		return this.serverURL+"rest/Eurocity/requestFotos"; 
 	},
+	requestUserFotosURL: function() {
+		return this.serverURL+"rest/Eurocity/requestUserFotos"; 
+	},
 	requestComentariosURL: function() {
 		return this.serverURL+"rest/Eurocity/requestComentarios"; 
 	},
 	addComentarioURL: function() {
 		return this.serverURL+"rest/Eurocity/addComentario"; 
+	},
+	addFotoURL: function() {
+		return this.serverURL+"rest/Eurocity/addFoto"; 
+	},
+	requestValoracionesURL: function() {
+		return this.serverURL+"rest/Eurocity/requestValoraciones"; 
 	}
 };
 
@@ -57,6 +69,13 @@ var valoracionJSON = {
 		nota: null,
 		user: null,
 		lugar: null
+}
+var valoracionesJSON = {
+		valoracion: [{
+			nota: null,
+			user: null,
+			lugar: null
+		}]
 }
 var ejerciciosJSON = {
 		ejercicio: [{
@@ -75,6 +94,12 @@ var notaJSON = {
 			solucion: null,
 			lugar: null
 		}
+}
+
+var fotoJSON = {
+		path:null,
+		user:null,
+		lugar: null
 }
 
 var fotosJSON = {
@@ -133,7 +158,9 @@ var photo = {
 					var tempFullPath=photoFiles[0].fullPath; //Begins with "file:"
 					tempFullPath=tempFullPath.substring(tempFullPath.indexOf("/")); //to retrieve "file:"
 					//alert("New photo in: "+tempFullPath);
-					
+					if (fileName=="fotoviaje"){
+						fileName=tempFullPath.substring(tempFullPath.lastIndexOf("/")+1);
+					}
 					fileUtilities.moveAsync(tempFullPath,fileFolder,fileName,
 				      function() {
 							photo.fileFolder=fileFolder;//Guardar en el atributo fileFolder del objeto photo, la carpeta destino
@@ -162,9 +189,10 @@ var ppal={
 					//'<img src="img/doge.gif" style="width:120px;height:120px;">'+
 					'<img src="https://dl.dropboxusercontent.com/s/40wdqko9el1oa7y/girl.gif?dl=0" style="width:120px;height:120px;">'+
 				'</div>'+
+				'<a href="" onclick="takePhotoViaje()" class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all"></a>'+
 				'<table style="width:100%">'+
 					'<tr>'+
-						'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href="idioma.html"><strong style="font-size: 35px;">IDIOMA</strong></a></td>'+
+						'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href="https://translate.google.com"><strong style="font-size: 35px;">IDIOMA</strong></a></td>'+
 					'</tr>'+
 					'<tr>'+
 					'<td bgcolor="'+localStorage.getItem("destino.color")+ '" align="center" ><a href="ubicacion.html"><strong style="font-size: 35px;">UBICACIÓN</strong></a></td>'+
@@ -245,6 +273,57 @@ var turismo={
 					'<a href="" onclick=\'responsiveVoice.speak("Gastronomía","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'
 			;
+			return contentDiv;
+		}
+}
+var destinos={
+		create: function(){
+			contentDiv=
+				'<div align="center">'+
+					'<strong style="font-size: 35px;">Mis destinos</strong>'+
+					'<a href="" onclick=\'responsiveVoice.speak("Mis destinos","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
+				'</div>';
+			contentDiv+=
+				'<h1 style="color:lightgreen;">Lisboa</h1>';
+			for(i=0;i<fotosJSON.foto.length;i++){
+				if (fotosJSON.foto[i].lugar=='Lisboa'){
+					contentDiv+=
+						'<div class="ui-field-contain">'+
+						'<img src="'+fotosJSON.foto[i].path+'" height="200px" width="300px">'+
+						'</div>';
+				}
+			}
+			contentDiv+=
+				'<h1 style="color:orange;">Londres</h1>';
+			for(i=0;i<fotosJSON.foto.length;i++){
+				if (fotosJSON.foto[i].lugar=='Londres'){
+					contentDiv+=
+						'<div class="ui-field-contain">'+
+						'<img src="'+fotosJSON.foto[i].path+'" height="200px" width="300px">'+
+						'</div>';
+				}
+			}
+			contentDiv+=
+				'<h1 style="color:yellow;">París</h1>';
+			for(i=0;i<fotosJSON.foto.length;i++){
+				if (fotosJSON.foto[i].lugar=='Paris'){
+					contentDiv+=
+						'<div class="ui-field-contain">'+
+						'<img src="'+fotosJSON.foto[i].path+'" height="200px" width="300px">'+
+						'</div>';
+				}
+			}
+			contentDiv+=
+				'<h1 style="color:lightblue;">Roma</h1>';
+			for(i=0;i<fotosJSON.foto.length;i++){
+				if (fotosJSON.foto[i].lugar=='Roma'){
+					contentDiv+=
+						'<div class="ui-field-contain">'+
+						'<img src="'+fotosJSON.foto[i].path+'" height="200px" width="300px">'+
+						'</div>';
+				}
+			}
+				
 			return contentDiv;
 		}
 }

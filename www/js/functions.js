@@ -32,6 +32,30 @@ function takePhoto(){
 			);
 }
 
+function takePhotoViaje(){
+	var fileFolder=appConstants.localPermanentStorageFolderImg();
+	var fileName="fotoviaje";
+	photo.takeAsync(
+			fileFolder,
+			fileName,
+			function(){
+				var rutaFoto=photo.fileFolder+photo.fileName;
+				fotoJSON.path=rutaFoto;
+				fotoJSON.lugar=localStorage.getItem("destino.name");
+				fotoJSON.user=localStorage.getItem("user.name");
+				$.ajax({
+					type: 'post',
+					contentType: 'application/json',
+					url: appConstants.addFotoURL(),
+					success: function(data){
+							alert(data);			
+					},
+					data: JSON.stringify(fotoJSON)			
+				});
+			}
+			);
+}
+
 function login(){
 	var loginVal=$("#login").val().trim();//Para quitar espacios extra, que daba error
 	if(loginVal!=null&&loginVal!=""){
@@ -105,6 +129,45 @@ function addUser(){
 	}	
 }
 
+function borrar(){
+	var proceed=false;
+	proceed=confirm("¿Estás seguro que quieres borrar tu cuenta? Este cambio es irreversible")
+	if (proceed==true){
+		$.getJSON(appConstants.deleteUserURL()+"?userName="+localStorage.getItem("user.name"),
+				function(data,status) {//Función callback
+					if(status=="success"){//Si la HTTP-RESPONSE es OK
+						alert(data)
+					}
+					else {
+						alert("NO RESPONSE FROM SERVER");
+					}
+				}
+			);
+	}
+	return proceed;
+}
+
+function verValoraciones(){
+	$.getJSON(appConstants.requestValoracionesURL()+"?userName="+localStorage.getItem("user.name"),
+			function(data,status) {//Función callback
+				if(status=="success"){//Si la HTTP-RESPONSE es OK
+					valoracionesJSON.valoracion=data.valoracion;
+					var alertContent="";
+					for(i=0;i<valoracionesJSON.valoracion.length;i++){
+						alertContent+="Destino: "+valoracionesJSON.valoracion[i].lugar+" Nota: "+valoracionesJSON.valoracion[i].nota+"\n";						
+					}
+					if (alertContent!=""){
+						alert(alertContent);
+					}
+					else alert("Aún no se han registrado valoraciones");
+				}
+				else {
+					alert("NO RESPONSE FROM SERVER");
+				}
+			}
+		);
+}
+
 function addValoracion(){
 	var puntuacion = document.getElementById("puntos");
 	valoracionJSON.nota=puntuacion.value;
@@ -134,7 +197,12 @@ function addComentario(categoria){
 			url: appConstants.addComentarioURL(),
 			success: function(data){
 					alert(data);
-					location.reload(true);
+					if (categoria=='interes'){
+						lugares();
+					}
+					else if (categoria=='gastronomia'){
+						gastro();
+					}
 			},
 			data: JSON.stringify(comentarioJSON)			
 		});
@@ -262,6 +330,20 @@ function turism(){
 function valor(){
 	document.getElementById("valoracion").innerHTML=valoracion.create();
 }
+function misDestinos(){
+	$.getJSON(appConstants.requestUserFotosURL()+"?usuario="+localStorage.getItem("user.name"),
+			function(data,status) {//Función callback
+				if(status=="success"){//Si la HTTP-RESPONSE es OK
+					fotosJSON.foto=data.foto;
+					document.getElementById("misDestinos").innerHTML=destinos.create();
+				}
+				else {
+					alert("NO RESPONSE FROM SERVER");
+				}
+			}
+		);
+	
+}
 function lugares(){
 	$.getJSON(appConstants.requestFotosURL()+"?usuario=interes&ciudad="+localStorage.getItem("destino.name"),
 			function(data,status) {//Función callback
@@ -316,5 +398,27 @@ function showhideFotos(){
 }
 function showhideForo(){
 	var e = document.getElementById("foroDiv");
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+}
+function showhideLisboa(){
+	var e = document.getElementById("lisboa");
+	$.getJSON(appConstants.requestFotosURL()+"?usuario="+localStorage.getItem("user.name")+"&ciudad=Lisboa",
+			function(data,status) {//Función callback
+				if(status=="success"){//Si la HTTP-RESPONSE es OK
+					fotosJSON.foto=data.foto;
+				}
+				else {
+					alert("NO RESPONSE FROM SERVER");
+				}
+			}
+		);
+	contentDiv="";
+	for(i=0;i<fotosJSON.foto.length;i++){
+		contentDiv+=
+			'<div class="ui-field-contain">'+
+			'<img src="'+fotosJSON.foto[i].path+' height="200px" width="300px">'+
+			'</div>';
+	}
+	e.innerHTML=contentDiv;
     e.style.display = (e.style.display == 'block') ? 'none' : 'block';
 }

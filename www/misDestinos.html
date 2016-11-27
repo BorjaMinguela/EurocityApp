@@ -24,18 +24,21 @@
 			</div>
 			<div class="perfil-options" style="text-align:center;display: inline-block;">
 				<fieldset data-role="collapsible" id="collapsible-1" data-collapsed-icon="bullets" data-expanded-icon="bars" data-iconpos="right">
-					<h1>Mi Perfil</h1>
-					<p>Collapsible content.</p>
-					<p>Collapsible content2.</p>
+					<h1>Opciones de perfil</h1>
+					<p><a href="index.html">Cerrar sesión</a></p>
+					<p><a href="index.html" onclick="return borrar()">Borrar cuenta</a></p>
+					<p><a href="" onclick="verValoraciones()">Ver valoraciones</a></p>
 				</fieldset>
 			</div>
 		</div>
-		<div data-role="content">
-			
-			Fotos (proximamente)
+		<div data-role="content" id="misDestinos">
+
 		</div>
 		<script type="text/javascript" src="js/responsivevoice.js"></script>
 		<script type="text/javascript" src="js/functions.js"></script>
 		<script type="text/javascript" src="js/objects.js"></script>
+		<script>
+			misDestinos();
+		</script> 
     </body>
 </html>
