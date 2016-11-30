@@ -265,11 +265,11 @@ var turismo={
 					'<a href="" onclick=\'responsiveVoice.speak("Turismo","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'+
 				'<div >'+
-					'<a href="lugaresEmblematicos.html" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Lugares emblemáticos</a>'+
+					'<a href="lugaresEmblematicos.html" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+';text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Lugares emblemáticos</a>'+
 					'<a href="" onclick=\'responsiveVoice.speak("Lugares emblemáticos","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'+
 				'<div >'+
-					'<a href="gastronomia.html" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+'">Gastronomía</a>'+
+					'<a href="gastronomia.html" class="ui-btn ui-corner-all" style="color:'+localStorage.getItem("destino.color")+';text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Gastronomía</a>'+
 					'<a href="" onclick=\'responsiveVoice.speak("Gastronomía","Spanish Female");\' class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>'
 			;
@@ -284,7 +284,7 @@ var destinos={
 					'<a href="" onclick=\'responsiveVoice.speak("Mis destinos","Spanish Female");\' id="audio1" class="ui-btn ui-icon-audio ui-btn-icon-notext ui-corner-all"></a>'+
 				'</div>';
 			contentDiv+=
-				'<h1 style="color:lightgreen;">Lisboa</h1>';
+				'<h1 style="color:lightgreen;font-weight: 900;font-size:70px">Lisboa</h1>';
 			for(i=0;i<fotosJSON.foto.length;i++){
 				if (fotosJSON.foto[i].lugar=='Lisboa'){
 					contentDiv+=
@@ -294,7 +294,7 @@ var destinos={
 				}
 			}
 			contentDiv+=
-				'<h1 style="color:orange;">Londres</h1>';
+				'<h1 style="color:orange;font-weight: 900;font-size:70px">Londres</h1>';
 			for(i=0;i<fotosJSON.foto.length;i++){
 				if (fotosJSON.foto[i].lugar=='Londres'){
 					contentDiv+=
@@ -304,7 +304,7 @@ var destinos={
 				}
 			}
 			contentDiv+=
-				'<h1 style="color:yellow;">París</h1>';
+				'<h1 style="color:yellow;font-weight: 900;font-size:70px">París</h1>';
 			for(i=0;i<fotosJSON.foto.length;i++){
 				if (fotosJSON.foto[i].lugar=='Paris'){
 					contentDiv+=
@@ -314,7 +314,7 @@ var destinos={
 				}
 			}
 			contentDiv+=
-				'<h1 style="color:lightblue;">Roma</h1>';
+				'<h1 style="color:lightblue;font-weight: 900;font-size:70px">Roma</h1>';
 			for(i=0;i<fotosJSON.foto.length;i++){
 				if (fotosJSON.foto[i].lugar=='Roma'){
 					contentDiv+=
@@ -398,7 +398,7 @@ var lugaresEmb={
 					for(i=0;i<fotosJSON.foto.length;i++){
 					contentDiv+=
 					'<div class="ui-field-contain">'+
-						'<img src="'+fotosJSON.foto[i].path+'>'+
+						'<img src="'+fotosJSON.foto[i].path+'height="200px" width="300px">'+
 					'</div>';
 				}
 				contentDiv+='</div>';
@@ -481,7 +481,8 @@ var gastronomia={
 					for(i=0;i<fotosJSON.foto.length;i++){
 					contentDiv+=
 					'<div class="ui-field-contain">'+
-						'<img src="'+fotosJSON.foto[i].path+'>'+
+						'<img src="'+fotosJSON.foto[i].path+' height="200px" width="300px">'+
+						//'<img src="'+fotosJSON.foto[i].path+'"height="200px" width="300px">'+
 					'</div>';
 				}
 				contentDiv+='</div>';
